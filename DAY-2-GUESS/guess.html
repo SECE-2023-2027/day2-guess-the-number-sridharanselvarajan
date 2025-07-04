@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guess My Number</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 400px;
+        }
+        h1 { color: #ff6b6b; margin-bottom: 10px; }
+        .number {
+            background: #ff6b6b;
+            color: white;
+            font-size: 3rem;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+        }
+        .guess {
+            padding: 10px;
+            font-size: 1.2rem;
+            width: 100px;
+            text-align: center;
+            margin-bottom: 15px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+        }
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            margin: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .btn-check { background: #ff6b6b; color: white; }
+        .btn-again { background: #4ecdc4; color: white; }
+        .message { margin: 15px 0; min-height: 24px; }
+        .score-board {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Guess My Number!</h1>
+        <p>Between 1 and 20</p>
+        <div class="number">?</div>
+        <input type="number" class="guess" min="1" max="20">
+        <div class="message">Start guessing...</div>
+        <div>
+            <button class="btn btn-check">Check</button>
+            <button class="btn btn-again">Again</button>
+        </div>
+        <div class="score-board">
+            <div>
+                <p>Score: <span class="score">20</span></p>
+            </div>
+            <div>
+                <p>Highscore: <span class="highscore">0</span></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const numberEl = document.querySelector('.number');
+        const guessEl = document.querySelector('.guess');
+        const messageEl = document.querySelector('.message');
+        const scoreEl = document.querySelector('.score');
+        const highscoreEl = document.querySelector('.highscore');
+        const checkBtn = document.querySelector('.btn-check');
+        const againBtn = document.querySelector('.btn-again');
+
+        let secretNumber = Math.trunc(Math.random() * 20) + 1;
+        let score = 20;
+        let highscore = 0;
+
+        checkBtn.addEventListener('click', function() {
+            const guess = Number(guessEl.value);
+            
+            if (!guess) {
+                messageEl.textContent = '⛔ No number!';
+                return;
+            }
+            
+            if (guess === secretNumber) {
+                messageEl.textContent = '🎉 Correct!';
+                numberEl.textContent = secretNumber;
+                document.body.style.backgroundColor = '#60b347';
+                if (score > highscore) highscoreEl.textContent = score;
+                return;
+            }
+            
+            messageEl.textContent = guess > secretNumber ? '📈 Too high!' : '📉 Too low!';
+            score--;
+            scoreEl.textContent = score;
+            
+            if (score < 1) {
+                messageEl.textContent = '💥 You lost!';
+                numberEl.textContent = secretNumber;
+                document.body.style.backgroundColor = '#e74c3c';
+            }
+        });
+
+        againBtn.addEventListener('click', function() {
+            score = 20;
+            secretNumber = Math.trunc(Math.random() * 20) + 1;
+            messageEl.textContent = 'Start guessing...';
+            numberEl.textContent = '?';
+            scoreEl.textContent = score;
+            guessEl.value = '';
+            document.body.style.backgroundColor = '#f0f0f0';
+        });
+
+        guessEl.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') checkBtn.click();
+        });
+    </script>
+</body>
+</html>
